@@ -1,0 +1,95 @@
+<div class="main-area">
+  <div class="content-area">
+    <div class="header">
+      <h1>Product Management System</h1>
+      <hr>
+    </div>
+    <div class="container">
+      <!--Add product form-->
+      <div class="form-area">
+        <h3>Create Product</h3>
+        <form #productsForm="ngForm" (ngSubmit)="onProductCreate(productsForm.value)">
+          <label>Product Code</label>
+          <input type="text" name="code" ngModel>
+          <input type="hidden" name="id" ngModel>
+
+          <label>Name</label>
+          <input type="text" name="name" ngModel>
+
+          <label>Quantity</label>
+          <input type="text" name="quantity" ngModel>
+
+          <label>Price</label>
+          <input type="text" name="price" ngModel>
+
+          <label>Product Description</label>
+          <input type="text" name="description" ngModel>
+
+          <label>Category</label>
+          <select name="categoryId" ngModel (change)='getSubCategories($event)'>
+            <option value="">select</option>
+            <option *ngFor="let item of categories" value="{{item.id}}">{{item.name}}</option>
+          </select>
+
+          <label>Sub Category</label>
+          <select name="subcategoryId" ngModel>
+            <option value="">select</option>
+            <option *ngFor="let item of subcategories" value="{{item.id}}">{{item.name}}</option>
+          </select>
+
+          <input type="submit" value="{{editMode?'Update Product': 'Add Product'}}">
+        </form>
+      </div>
+
+      <!--Display product area-->
+      <div class="product-display-area">
+        <h3>Products</h3>
+        <label>Category</label>
+        <select name="category" ngModel (change)='fetchProductByCategory($event)'>
+          <option value="">select</option>
+          <option *ngFor="let item of categories" value="{{item.id}}">{{item.name}}</option>
+        </select>
+
+        <label>Sub Category</label>
+        <select name="subcategory" ngModel (change)='fetchProductBySubCategory($event)'>
+          <option value="">select</option>
+          <option *ngFor="let item of subcategories" value="{{item.id}}">{{item.name}}</option>
+        </select>
+
+        <table id="products">
+          <tr>
+            <th>Product Code</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Product Description</th>
+            <th>Category</th>
+            <th>Sub Category</th>
+            <th></th>
+          </tr>
+          <tr *ngIf="allProducts.length<1 &&!isFetching">
+            <td colspan="5">No Products Available</td>
+          </tr>
+          <tr *ngIf="isFetching">
+            <td colspan="5">Loading ...</td>
+          </tr>
+          <tr *ngFor="let prod of allProducts; index as i" [ngStyle]="{ backgroundColor: prod.quantity < 10 ? 'red' : prod.quantity < 100 ? 'orange' : 'green'}" >
+            <td>{{prod.code}}</td>
+            <td>{{prod.name}}</td>
+            <td>{{prod.quantity}}</td>
+            <td>{{prod.price}}</td>
+            <td>{{prod.description}}</td>
+            <td>{{prod.categoryId}}</td>
+            <td>{{prod.subCategoryId}}</td>
+            <td><button class="btn-delete" (click)="onDeleteProduct(prod.id)">Delete</button></td>
+            <td><button class="btn-edit" (click)="onEditProduct(prod.id)">Edit</button></td>
+          </tr>
+        </table>
+        <hr>
+        <div class="action-btn-container">
+          <button class="btn-fetch" (click)="onProductsFetch()">Fetch Product</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
